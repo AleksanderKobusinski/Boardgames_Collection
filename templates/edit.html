@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="box">
+	<h1>Edit</h1>
+    <form action="{{ url_for('edit', id=boardgame.id) }}" method="post">
+    	<input type="text" name="name" placeholder="Name" value="{{ boardgame.name }}" required="required" />
+		<input type="text" name="img_link" placeholder="IMG Link" value="{{ boardgame.img }}" required="required" />
+        <button type="submit" class="btn btn-primary btn-block btn-large">Edit</button>
+    </form>
+    <a href="{{ url_for('delete', id=boardgame.id) }}" class="btn btn-danger" role="button">Delete</a>
+</div>
+
+{% endblock %}

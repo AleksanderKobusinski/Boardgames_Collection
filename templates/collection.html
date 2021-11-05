@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+  <h1 class="title">{{name}} collection!</h1>
+  <a href="{{ url_for('add') }}" class="btn btn-primary" role="button">Add</a>
+  {% for boardgame in boardgames %}
+  <div class="card">
+    <img src="{{ boardgame.img }}" class="img-thumbnail" alt="{{ boardgame.name }}">
+    <a href="{{ url_for('edit', id=boardgame.id) }}">{{ boardgame.name }}</a>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
