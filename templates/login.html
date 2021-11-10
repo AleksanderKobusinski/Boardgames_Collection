@@ -1,23 +1,51 @@
 {% extends "base.html" %}
 {% block content %}
-
-<div class="box">
-  <h1>Login</h1>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        {% for message in messages %}
-         <p>{{ message }}</p>  
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
-        <form method="post">
-          <input type="text" name="email" placeholder="Email" required="required"/>
-          <input type="password" name="password" placeholder="Password" required="required"/>
-          <button type="submit" class="btn btn-primary btn-block btn-large">Let me in.</button>       
-        </form>
-
+<div class="signingPage">
+  <div class="row justify-content-center">
+    <div class="col-md-4 d-flex justify-content-center vertical-center">
+      <div class="card text-center">
+        <img src="{{ url_for('static', filename='login_img.jpg') }}" class="card-img-top" alt="Login">
+        <div class="card-body">
+          <h4 class="card-title">Login</h4>
+          <form method="post">
+              {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% if messages[0] == "user" %}
+                      <div class="form-group">
+                        <input type="text" name="email" class="form-control is-invalid" placeholder="Email" required="required"/>
+                        <div class="invalid-feedback">
+                        That email does not exist, please try again.
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <input type="password" name="password" class="form-control" placeholder="Password" required="required"/>
+                      </div>
+                    {% else %}
+                      <div class="form-group">
+                        <input type="text" name="email" class="form-control" placeholder="Email" required="required"/>
+                      </div>
+                      <div class="form-group">
+                        <input type="password" name="password" class="form-control is-invalid" placeholder="Password" required="required"/>
+                        <div class="invalid-feedback">
+                          Password incorrect, please try again.
+                        </div>
+                      </div>
+                    {% endif %}
+                {% else %}
+                  <div class="form-group">
+                    <input type="text" name="email" class="form-control" placeholder="Email" required="required"/>
+                  </div>
+                  <div class="form-group">
+                    <input type="password" name="password" class="form-control" placeholder="Password" required="required"/>
+                  </div>
+                {% endif %}
+              {% endwith %}
+            <button type="submit" class="btn btn-info">Let me in.</button>
+          </form>
+        </div>
+      </div>
     </div>
-    
+  </div>
 </div>
 
 {% endblock %}
