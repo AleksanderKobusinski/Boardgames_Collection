@@ -11,3 +11,25 @@
 .signingPage {
 	overflow: hidden;
 }
+
+.card {
+	min-width: 20rem;
+	max-width: 22rem;
+	margin: 2rem;
+}
+
+.collection-img {
+	min-height: 351px;
+}
+
+#fixedbutton {
+    position: fixed;
+    bottom: 3rem;
+    right: 3rem;
+	display:block;
+  	height: 70px;
+  	width: 70px;
+  	border-radius: 50%;
+	font-size: 35px;
+	font-weight: lighter;
+}

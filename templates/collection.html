@@ -3,12 +3,24 @@
 
 <div class="container">
   <h1 class="title">{{name}} collection!</h1>
-  <a href="{{ url_for('add') }}" class="btn btn-primary" role="button">Add</a>
-  {% for boardgame in boardgames %}
-  <div class="card">
-    <img src="{{ boardgame.img }}" class="img-thumbnail" alt="{{ boardgame.name }}">
-    <a href="{{ url_for('edit', id=boardgame.id) }}">{{ boardgame.name }}</a>
+  <a href="{{ url_for('add') }}" class="btn btn-info" id="fixedbutton" role="button">
+    <i class="fas fa-plus"></i>
+  </a>
+  <div>
+    <div class="card-deck">
+      {% for boardgame in boardgames %}
+      <div class="card text-center">
+        <img src="{{ boardgame.img }}" class="card-img-top" alt="{{ boardgame.name }}"> 
+        <div class="card-body">
+          <h5 class="card-title">{{ boardgame.name }}</h5> 
+        </div>
+        <div class="card-footer text-muted">
+          <a href="{{ url_for('edit', id=boardgame.id) }}" class="btn btn-info" role="button">Edit</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
   </div>
-  {% endfor %}
 </div>
+
 {% endblock %}
