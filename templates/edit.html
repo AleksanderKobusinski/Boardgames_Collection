@@ -15,9 +15,26 @@
                 <div class="form-group">
                     <input type="text" name="img_link" placeholder="IMG Link" value="{{ boardgame.img }}" required="required" />
                 </div>
+                <div class="form-group">
+                  <input type="text" name="year" placeholder="Year" value="{{ boardgame.year }}" required="required" />
+                </div>
+                <div class="form-group">
+                  <input type="text" name="level" placeholder="Complexity" value="{{ boardgame.level }}" required="required" />
+                </div>
+                <div class="form-group">
+                  <input type="text" name="minPlayers" placeholder="Min players" value="{{ boardgame.minPlayers }}" required="required" />
+                </div>
+                <div class="form-group">
+                  <input type="text" name="maxPlayers" placeholder="Max players" value="{{ boardgame.maxPlayers }}" required="required" />
+                </div>
+                <div class="form-group">
+                  <input type="text" name="time" placeholder="Time" value="{{ boardgame.time }}" required="required" />
+                </div>
+                <div class="form-group">
+                  <input type="text" name="rate" placeholder="Rate" value="{{ boardgame.rate }}" required="required" />
+                </div>
                 <button type="submit" class="btn btn-info">Edit</button>
-            </form>
-            
+            </form> 
           </div>
           <div class="card-footer text-muted">
             <a href="{{ url_for('delete', id=boardgame.id) }}" class="btn btn-dark" role="button">Delete</a>

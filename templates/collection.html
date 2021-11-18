@@ -2,17 +2,26 @@
 {% block content %}
 
 <div class="container">
-  <h1 class="title">{{name}} collection!</h1>
+  <h1 class="title">{{name}}'s collection!</h1>
   <a href="{{ url_for('add') }}" class="btn btn-info" id="fixedbutton" role="button">
     <i class="fas fa-plus"></i>
   </a>
   <div>
     <div class="card-deck">
       {% for boardgame in boardgames %}
-      <div class="card text-center">
-        <img src="{{ boardgame.img }}" class="card-img-top" alt="{{ boardgame.name }}"> 
+      <div class="card game-card text-center">
+        <div class="card-img-top img-box">
+          <img src="{{ boardgame.img }}" class="game-img" alt="{{ boardgame.name }}"> 
+        </div>
+        <div class="card-header">
+          <h4><i class="fas fa-star"></i> {{ boardgame.rate }}</h4>
+        </div>
         <div class="card-body">
-          <h5 class="card-title">{{ boardgame.name }}</h5> 
+          <h5 class="card-title">{{ boardgame.name }}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{ boardgame.year }}</h6>
+          <p class="card-text">Players: {{ boardgame.minPlayers }}-{{ boardgame.maxPlayers }}</p>
+          <p class="card-text">Time: {{ boardgame.time }} min</p>
+          <p class="card-text">Complexity: {{ boardgame.level }}</p>
         </div>
         <div class="card-footer text-muted">
           <a href="{{ url_for('edit', id=boardgame.id) }}" class="btn btn-info" role="button">Edit</a>

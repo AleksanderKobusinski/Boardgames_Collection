@@ -31,6 +31,12 @@ class Boardgame(UserMixin, db.Model):
     owner = db.Column(db.Integer)
     name = db.Column(db.String(1000))
     img = db.Column(db.String(1000))
+    year = db.Column(db.Integer)
+    level = db.Column(db.Integer)
+    minPlayers = db.Column(db.Integer)
+    maxPlayers = db.Column(db.Integer)
+    time = db.Column(db.String(100))
+    rate = db.Column(db.Integer)
 
 db.create_all()
 
@@ -101,10 +107,15 @@ def collection():
 def add():
     if request.method == "POST":
         new_boardgame = Boardgame(
-            owner=current_user.id,
-            name=request.form.get('name'),
-            img=request.form.get('img_link')
-            
+            owner = current_user.id,
+            name = request.form.get('name'),
+            img = request.form.get('img_link'),
+            year = request.form.get('year'),
+            level = request.form.get('level'),
+            minPlayers = request.form.get('minPlayers'),
+            maxPlayers = request.form.get('maxPlayers'),
+            time = request.form.get('time'),
+            rate = request.form.get('rate')
         )
         db.session.add(new_boardgame)
         db.session.commit()
@@ -120,6 +131,12 @@ def edit():
     if request.method == "POST":
         boardgame.img = request.form.get('img_link')
         boardgame.name = request.form.get('name')
+        boardgame.year = request.form.get('year')
+        boardgame.level = request.form.get('level')
+        boardgame.minPlayers = request.form.get('minPlayers')
+        boardgame.maxPlayers = request.form.get('maxPlayers')
+        boardgame.time = request.form.get('time')
+        boardgame.rate = request.form.get('rate')
         db.session.commit()
         return redirect(url_for('collection'))
 
