@@ -2,9 +2,6 @@
 {% block content %}
 
 <div class="container">
-  <a href="{{ url_for('add') }}" class="btn btn-info" id="fixedbutton" role="button">
-    <i class="fas fa-plus"></i>
-  </a>
 
   <a class="btn btn-info" id="friendbutton" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
     <i class="fas fa-user"></i>
@@ -36,7 +33,7 @@
 
   <div class="card border-info text-center friend-list" id="static-friend-list">
     <div class="card-header">
-      <h5>My followings</h5>
+      <h5 class="text-center">My followings</h5>
     </div>
     <ul class="list-group list-group-flush">
       {% for following in followings %}
@@ -55,8 +52,9 @@
       <a class="nav-link" href="{{ url_for('addfollowing') }}">+</a>
     </div>
   </div>
-
+  
   <div>
+    <h1>{{owner}}'s Collection</h1>
     <div class="card-deck">
       {% for boardgame in boardgames %}
       <div class="card game-card text-center border-info">
@@ -72,9 +70,6 @@
           <p class="card-text">Players: {{ boardgame.minPlayers }}-{{ boardgame.maxPlayers }}</p>
           <p class="card-text">Time: {{ boardgame.time }} min</p>
           <p class="card-text">Complexity: {{ boardgame.level }}</p>
-        </div>
-        <div class="card-footer text-muted">
-          <a href="{{ url_for('edit', id=boardgame.id) }}" class="btn btn-info" role="button">Edit</a>
         </div>
       </div>
       {% endfor %}

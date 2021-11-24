@@ -19,9 +19,10 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-##CREATE TABLE
+##CREATE TABLES
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    avatar = db.Column(db.String(1000))
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
     name = db.Column(db.String(1000))
@@ -38,6 +39,11 @@ class Boardgame(UserMixin, db.Model):
     time = db.Column(db.String(100))
     rate = db.Column(db.Integer)
 
+class Following(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.Column(db.String(100))
+    following = db.Column(db.Integer)
+
 db.create_all()
 
 
@@ -53,8 +59,8 @@ def register():
 
         if User.query.filter_by(email=request.form.get('email')).first():
             #User already exists
-            flash("You've already signed up with that email, log in instead!")
-            return redirect(url_for('login'))
+            flash("Alredy_register")
+            return redirect(url_for('register'))
 
         hash_and_salted_password = generate_password_hash(
             request.form.get('password'),
@@ -62,6 +68,7 @@ def register():
             salt_length=8
         )
         new_user = User(
+            avatar = "https://www.sibberhuuske.nl/wp-content/uploads/2016/10/default-avatar.png",
             email=request.form.get('email'),
             name=request.form.get('name'),
             password=hash_and_salted_password,
@@ -98,8 +105,23 @@ def login():
 @app.route('/collection')
 @login_required
 def collection():
-    users_boardgames = Boardgame.query.filter_by(owner=current_user.id).all()
-    return render_template("collection.html", name=current_user.name, boardgames=users_boardgames, logged_in=True)
+    users_boardgames = Boardgame.query.filter_by(owner=current_user.id).order_by(Boardgame.rate.desc()).all()
+    users_followings = Following.query.filter_by(user=current_user.id).all()
+    followings_list = []
+    for following in users_followings:
+        followings_list.append(User.query.filter_by(id=following.following).first())
+    return render_template("collection.html", name=current_user.name, avatar=current_user.avatar, boardgames=users_boardgames, followings=followings_list, logged_in=True)
+
+@app.route('/following/<id>')
+@login_required
+def following(id):
+    User.query.filter_by(id=id).first().name
+    users_boardgames = Boardgame.query.filter_by(owner=id).order_by(Boardgame.rate.desc()).all()
+    users_followings = Following.query.filter_by(user=current_user.id).all()
+    followings_list = []
+    for following in users_followings:
+        followings_list.append(User.query.filter_by(id=following.following).first())
+    return render_template("following.html", name=current_user.name, avatar=current_user.avatar, boardgames=users_boardgames, followings=followings_list, owner=User.query.filter_by(id=id).first().name, logged_in=True)
 
 
 @app.route('/add', methods=["GET", "POST"])
@@ -121,7 +143,7 @@ def add():
         db.session.commit()
         return redirect(url_for("collection"))
     
-    return render_template("add.html", name=current_user.name, logged_in=True)
+    return render_template("add.html", name=current_user.name, avatar=current_user.avatar, logged_in=True)
 
 @app.route("/edit", methods=["GET", "POST"])
 @login_required
@@ -140,7 +162,7 @@ def edit():
         db.session.commit()
         return redirect(url_for('collection'))
 
-    return render_template("edit.html", boardgame=boardgame, name=current_user.name, logged_in=True)
+    return render_template("edit.html", boardgame=boardgame, name=current_user.name, avatar=current_user.avatar, logged_in=True)
 
 @app.route("/delete")
 @login_required
@@ -159,6 +181,40 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
+
+@app.route('/addfollowing', methods=["GET", "POST"])
+@login_required
+def addfollowing():
+    if request.method == "POST":
+        new_following = User.query.filter_by(email=request.form.get('email')).first()
+        all_followings = Following.query.filter_by(user=current_user.id).all()
+        if current_user.id == new_following.id:
+                flash("Is_you")
+                return redirect(url_for('addfollowing'))
+        for following in all_followings:
+            if User.query.filter_by(id=following.following).first().id == new_following.id:
+                flash("Alredy_is")
+                return redirect(url_for('addfollowing'))
+        new_following = Following(
+            user = current_user.id,
+            following = new_following.id
+        )
+        db.session.add(new_following)
+        db.session.commit()
+        return redirect(url_for("collection"))
+    
+    return render_template("addfollowing.html", name=current_user.name, avatar=current_user.avatar, logged_in=True)
+
+@app.route("/deletefollowing")
+@login_required
+def deletefollowing():
+    following_id = request.args.get('id')
+    following = Following.query.filter_by(user=current_user.id, following=following_id).first()
+    following_to_delete = Following.query.get(following.id)
+    # DELETE A RECORD BY ID
+    db.session.delete(following_to_delete)
+    db.session.commit()
+    return redirect(url_for('collection'))
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -17,9 +17,13 @@
 
   <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
     {% if not logged_in: %}
-    <a class="navbar-brand" href="/">BoardGames</a>
+    <a class="navbar-brand" href="/">
+      BoardGames
+    </a>
     {% else %}
-    <a class="navbar-brand" href="{{ url_for('collection') }}">BoardGames</a>
+    <a class="navbar-brand" href="{{ url_for('collection') }}">
+      BoardGames
+    </a>
     {% endif %}
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerMenu" aria-controls="navbarTogglerMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -35,7 +39,11 @@
         </li>
           {% else %}
         <li class="nav-item">
-          <a class="nav-link" href="#">Welcome, {{name}}!</a>
+          <div class="media">
+            <img src="{{ avatar }}" class="align-self-center mr-3 avatar" alt="{{ avatar }}">
+            <div class="media-body">
+              <a class="nav-link" href="#"> {{name}}</a>
+            </div>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{{ url_for('logout') }}">Log Out</a>

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="signingPage">
+    <div class="row justify-content-center">
+        <div class="col-md-4 d-flex justify-content-center vertical-center">
+          <div class="card text-center border-info">
+            <div class="card-body">
+              <h4 class="card-title">Add following</h4>
+              <form action="{{ url_for('addfollowing') }}" method="post">
+                <div class="form-group">
+                  {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                      {% if messages[0] == "Alredy_is" %}
+                        <input type="text" name="email" class="form-control is-invalid" placeholder="E-mail" required="required" />
+                        <div class="invalid-feedback">
+                          You are alredy following that user!
+                        </div>
+                      {% else %}
+                        <input type="text" name="email" class="form-control is-invalid" placeholder="E-mail" required="required" />
+                        <div class="invalid-feedback">
+                          You can't following yourself!
+                        </div>
+                      {% endif %}
+                    {% else %}
+                    <input type="text" name="email" class="form-control" placeholder="E-mail" required="required" />
+                    {% endif %}
+                  {% endwith %}
+                </div>
+                <button type="submit" class="btn btn-info">Add</button>
+              </form>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+
+{% endblock %}
