@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <span data-feather="home"></span>
+                            Collection <span class="sr-only">(current)</span>
+                        </a>
+                        <a class="nav-link" href="#">
+                            Friends
+                        </a>
+                        <a class="nav-link" href="#">
+                            Settings
+                        </a>
+                    </li>
+                </ul>
+
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>Friends</span>
+                    <a class="d-flex align-items-center btn btn-outline-secondary btn-xs" href="{{ url_for('addfriend') }}">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                </h6>
+                <ul class="nav flex-column mb-2">
+                    {% for friend in friends_waiting %}
+                    <li class="list-group-item">
+                        <div class="media">
+                            <img src="{{ friend.avatar }}" class="align-self-center mr-3 avatar" alt="avatar">
+                            <div class="media-body">
+                                {{ friend.name }}
+                                <a class="btn btn-outline-success btn-xs" href="{{ url_for('acceptfriend', id=friend.id) }}"
+                                    type="button">
+                                    <i class="fas fa-check"></i>
+                                </a>
+                                <a class="btn btn-outline-danger btn-xs" href="{{ url_for('declinefriend', id=friend.id) }}"
+                                    type="button">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <ul class="nav flex-column mb-2">
+                    {% for friend in friends_accepted %}
+                    <li class="list-group-item">
+                        <div class="media">
+                            <img src="{{ friend.avatar }}" class="align-self-center mr-3 avatar" alt="avatar">
+                            <div class="media-body">
+                                <a class="nav-link" href="{{ url_for('friend', id=friend.id) }}">
+                                    <span data-feather="file-text"></span>
+                                    {{ friend.name }}
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </nav>
+        {% block content2 %}
+        {% endblock %}
+
+        {% endblock %}

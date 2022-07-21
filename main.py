@@ -27,8 +27,8 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(100))
     name = db.Column(db.String(1000))
 
-class Boardgame(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+class Boardgame(db.Model):
+    id = db.Column(db.Integer, primary_key=True) 
     owner = db.Column(db.Integer)
     name = db.Column(db.String(1000))
     img = db.Column(db.String(1000))
@@ -39,10 +39,11 @@ class Boardgame(UserMixin, db.Model):
     time = db.Column(db.String(100))
     rate = db.Column(db.Integer)
 
-class Following(UserMixin, db.Model):
+class Friendship(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user = db.Column(db.String(100))
-    following = db.Column(db.Integer)
+    friend = db.Column(db.Integer)
+    status = db.Column(db.String(10))
 
 db.create_all()
 
@@ -106,22 +107,30 @@ def login():
 @login_required
 def collection():
     users_boardgames = Boardgame.query.filter_by(owner=current_user.id).order_by(Boardgame.rate.desc()).all()
-    users_followings = Following.query.filter_by(user=current_user.id).all()
-    followings_list = []
-    for following in users_followings:
-        followings_list.append(User.query.filter_by(id=following.following).first())
-    return render_template("collection.html", name=current_user.name, avatar=current_user.avatar, boardgames=users_boardgames, followings=followings_list, logged_in=True)
+    users_friends = Friendship.query.filter_by(user=current_user.id).all()
+    friends_list_accepted = []
+    friends_list_waiting = []
+    for friend in users_friends:
+        if friend.status == "accepted":
+            friends_list_accepted.append(User.query.filter_by(id=friend.friend).first())
+        else:
+            friends_list_waiting.append(User.query.filter_by(id=friend.friend).first())
+    return render_template("collection.html", name=current_user.name, avatar=current_user.avatar, boardgames=users_boardgames, friends_accepted=friends_list_accepted, friends_waiting=friends_list_waiting, logged_in=True)
 
-@app.route('/following/<id>')
+@app.route('/friend/<id>')
 @login_required
-def following(id):
+def friend(id):
     User.query.filter_by(id=id).first().name
     users_boardgames = Boardgame.query.filter_by(owner=id).order_by(Boardgame.rate.desc()).all()
-    users_followings = Following.query.filter_by(user=current_user.id).all()
-    followings_list = []
-    for following in users_followings:
-        followings_list.append(User.query.filter_by(id=following.following).first())
-    return render_template("following.html", name=current_user.name, avatar=current_user.avatar, boardgames=users_boardgames, followings=followings_list, owner=User.query.filter_by(id=id).first().name, logged_in=True)
+    users_friends = Friendship.query.filter_by(user=current_user.id).all()
+    friends_list_accepted = []
+    friends_list_waiting = []
+    for friend in users_friends:
+        if friend.status == "accepted":
+            friends_list_accepted.append(User.query.filter_by(id=friend.friend).first())
+        else:
+            friends_list_waiting.append(User.query.filter_by(id=friend.friend).first())
+    return render_template("friend.html", name=current_user.name, avatar=current_user.avatar, boardgames=users_boardgames, friends_accepted=friends_list_accepted, friends_waiting=friends_list_waiting, owner=User.query.filter_by(id=id).first().name, logged_in=True)
 
 
 @app.route('/add', methods=["GET", "POST"])
@@ -181,38 +190,69 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
-
-@app.route('/addfollowing', methods=["GET", "POST"])
+@app.route('/addfriend', methods=["GET", "POST"])
 @login_required
-def addfollowing():
+def addfriend():
     if request.method == "POST":
-        new_following = User.query.filter_by(email=request.form.get('email')).first()
-        all_followings = Following.query.filter_by(user=current_user.id).all()
-        if current_user.id == new_following.id:
+        new_friend = User.query.filter_by(email=request.form.get('email')).first()
+        all_friends = Friendship.query.filter_by(user=current_user.id).all()
+        if current_user.id == new_friend.id:
                 flash("Is_you")
-                return redirect(url_for('addfollowing'))
-        for following in all_followings:
-            if User.query.filter_by(id=following.following).first().id == new_following.id:
+                return redirect(url_for('addfriend'))
+        for friend in all_friends:
+            if User.query.filter_by(id=friend.friend).first().id == new_friend.id:
                 flash("Alredy_is")
-                return redirect(url_for('addfollowing'))
-        new_following = Following(
-            user = current_user.id,
-            following = new_following.id
+                return redirect(url_for('addfriend'))
+        new_friendship = Friendship(
+            user = new_friend.id,
+            friend = current_user.id,
+            status = "waiting"
         )
-        db.session.add(new_following)
+        db.session.add(new_friendship)
         db.session.commit()
         return redirect(url_for("collection"))
     
-    return render_template("addfollowing.html", name=current_user.name, avatar=current_user.avatar, logged_in=True)
+    return render_template("addfriend.html", name=current_user.name, avatar=current_user.avatar, logged_in=True)
 
-@app.route("/deletefollowing")
+@app.route("/acceptfriend")
 @login_required
-def deletefollowing():
-    following_id = request.args.get('id')
-    following = Following.query.filter_by(user=current_user.id, following=following_id).first()
-    following_to_delete = Following.query.get(following.id)
+def acceptfriend():
+    friend_id = request.args.get('id')
+    friendship = Friendship.query.filter_by(user=current_user.id, friend=friend_id).first()
+    friendship_to_accept = Friendship.query.get(friendship.id)
+    friendship_to_accept.status = "accepted"
+    new_friendship = Friendship(
+        user = friend_id,
+        friend = current_user.id,
+        status = "accepted"
+    )
+    db.session.add(new_friendship)
+    db.session.commit()
+    return redirect(url_for('collection'))
+
+@app.route("/declinefriend")
+@login_required
+def declinefriend():
+    friend_id = request.args.get('id')
+    friendship = Friendship.query.filter_by(user=current_user.id, friend=friend_id).first()
+    friendship_to_delete = Friendship.query.get(friendship.id)
+
     # DELETE A RECORD BY ID
-    db.session.delete(following_to_delete)
+    db.session.delete(friendship_to_delete)
+    db.session.commit()
+    return redirect(url_for('collection'))
+
+@app.route("/deletefriend")
+@login_required
+def deletefriend():
+    friend_id = request.args.get('id')
+    friendship = Friendship.query.filter_by(user=current_user.id, friend=friend_id).first()
+    friendship2 = Friendship.query.filter_by(user=friend_id, friend=current_user.id).first()
+    friendship_to_delete = Friendship.query.get(friendship.id)
+    friendship_to_delete2 = Friendship.query.get(friendship2.id)
+    # DELETE A RECORD BY ID
+    db.session.delete(friendship_to_delete)
+    db.session.delete(friendship_to_delete2)
     db.session.commit()
     return redirect(url_for('collection'))
 
