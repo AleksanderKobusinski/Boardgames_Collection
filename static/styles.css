@@ -154,9 +154,9 @@ body {
   font-size: .875rem;
   line-height: .5;
   border-radius: .2rem;
+  width: 28.78px;
 }
 
-.form-group>*{
-  margin-left: .75rem;
-  margin-right: .75rem;
+#addGameModal .form-group>*{
+  margin-top: .75rem;
 }
