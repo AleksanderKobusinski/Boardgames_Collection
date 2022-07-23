@@ -1,109 +1,17 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "side.html" %}
+{% block content2 %}
 
-<div class="container">
-
-  <a class="btn btn-info fixedbutton" id="friendbutton" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-    <i class="fas fa-user"></i>
-  </a>
-
-  <div class="collapse" id="collapseExample">
-    <div class="card border-info text-center friend-list" id="collapse-friend-list">
-      <div class="card-header">
-        <h5>My friends</h5>
-      </div>
-      <ul class="list-group list-group-flush">
-        {% for friend in friends_accepted %}
-        <li class="list-group-item">
-          <div class="media">
-            <img src="{{ friend.avatar }}" class="align-self-center mr-3 avatar"  alt="avatar">
-            <div class="media-body">
-               {{ friend.name }}
-                    <a class="btn btn-info" href="{{ url_for('friend', id=friend.id) }}" type="button">Collection</a>
-                    <a class="btn btn-info" href="{{ url_for('deletefriend', id=friend.id) }}" type="button">Delete friend</a>
-            </div>
-          </div>
-        </li>
-        {% endfor %}
-      </ul>
-      <ul class="list-group list-group-flush">
-        {% for friend in friends_waiting %}
-        <li class="list-group-item">
-          <div class="media">
-            <img src="{{ friend.avatar }}" class="align-self-center mr-3 avatar"  alt="avatar">
-            <div class="media-body">
-              <p>{{ friend.name }}</p>
-              <a class="btn btn-success btn-sm" href="{{ url_for('acceptfriend', id=friend.id) }}" type="button">
-                <i class="fas fa-check"></i>
-              </a>
-              <a class="btn btn-danger btn-sm" href="{{ url_for('declinefriend', id=friend.id) }}" type="button">
-                <i class="fas fa-times"></i>
-              </a>
-            </div>
-          </div>
-        </li>
-        {% endfor %}
-      </ul>
-      <div class="text-right">
-        <a class="nav-link" href="{{ url_for('addfriend') }}">+</a>
-      </div>
-    </div>
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h1 class="h2">{{owner}}'s Collection</h1>
   </div>
 
-  <div class="card border-info text-center friend-list" id="static-friend-list">
-    <div class="card-header">
-      <h5>My friends</h5>
-    </div>
-    <ul class="list-group list-group-flush">
-      {% for friend in friends_accepted %}
-      <li class="list-group-item">
-        <div class="media">
-          <img src="{{ friend.avatar }}" class="align-self-center mr-3 avatar"  alt="avatar">
-          <div class="media-body">
-            {{ friend.name }}
-            <div class="dropdown">
-              <button class="btn btn-outline-info btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="{{ url_for('friend', id=friend.id) }}">Collection</a>
-                <a class="dropdown-item" href="{{ url_for('deletefriend', id=friend.id) }}">Delete</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </li>
-      {% endfor %}
-    </ul>
-    <ul class="list-group list-group-flush">
-      {% for friend in friends_waiting %}
-      <li class="list-group-item">
-        <div class="media">
-          <img src="{{ friend.avatar }}" class="align-self-center mr-3 avatar"  alt="avatar">
-          <div class="media-body">
-            {{ friend.name }}
-            <a class="btn btn-outline-success btn-sm" href="{{ url_for('acceptfriend', id=friend.id) }}" type="button">
-              <i class="fas fa-check"></i>
-            </a>
-            <a class="btn btn-outline-danger btn-sm" href="{{ url_for('declinefriend', id=friend.id) }}" type="button">
-              <i class="fas fa-times"></i>
-            </a>
-          </div>
-        </div>
-      </li>
-      {% endfor %}
-    </ul>
-    <div class="text-right">
-      <a class="nav-link" href="{{ url_for('addfriend') }}">+</a>
-    </div>
-  </div>
-  
   <div>
-    <h1>{{owner}}'s Collection</h1>
     <div class="card-deck">
       {% for boardgame in boardgames %}
       <div class="card game-card text-center border-info">
         <div class="card-img-top img-box">
-          <img src="{{ boardgame.img }}" class="game-img" alt="{{ boardgame.name }}"> 
+          <img src="{{ boardgame.img }}" class="game-img" alt="{{ boardgame.name }}">
         </div>
         <div class="card-header">
           <h4><i class="fas fa-star"></i> {{ boardgame.rate }}</h4>
@@ -119,6 +27,7 @@
       {% endfor %}
     </div>
   </div>
-</div>
+  </div>
+</main>
 
 {% endblock %}

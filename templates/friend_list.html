@@ -1,0 +1,35 @@
+{% extends "side.html" %}
+{% block content2 %}
+
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">Friends</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <button type="button" class="btn btn-sm btn-outline-info" data-toggle="modal" data-target="#addFriendModal">
+            <i class="fas fa-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <div class="card-deck">
+          {% for friend in friends_accepted %}
+          <div class="card game-card text-center border-info">
+            <div class="card-img-top img-box">
+              <img src="{{ friend.avatar }}" class="game-img" alt="{{ friend.name }}">
+            </div>
+            <div class="card-body">
+                <a class="nav-link" href="{{ url_for('friend', id=friend.id) }}">
+                    <h4>{{ friend.name }}</h4>
+                </a>
+            </div>
+            <div class="card-footer text-muted">
+              <a href="{{ url_for('deletefriend', id=friend.id) }}" class="btn btn-danger btn-sm" role="button">Delete</a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+</main>
+
+{% endblock %}

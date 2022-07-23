@@ -1,7 +1,7 @@
 {% extends "side.html" %}
 {% block content2 %}
 
-<!-- Modal -->
+<!-- Modals -->
 <div class="modal fade" id="addGameModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content border border-info">
@@ -12,25 +12,57 @@
         </button>
       </div>
       <form action="{{ url_for('add') }}" method="post">
+        <div class="modal-body text-center">
+            <div class="form-group">
+              <input type="text" name="name" class="form-control" placeholder="Name" required="required" />
+              <input type="text" name="img_link" class="form-control" placeholder="IMG Link" required="required" />
+              <input type="text" name="year" class="form-control" placeholder="Year" required="required" />
+              <input type="text" name="level" class="form-control" placeholder="Complexity" required="required" />
+              <input type="text" name="minPlayers" class="form-control"  placeholder="Min players" required="required" />
+              <input type="text" name="maxPlayers" class="form-control" placeholder="Max players" required="required" />
+              <input type="text" name="time" class="form-control" placeholder="Time" required="required" />
+              <input type="text" name="rate" class="form-control" placeholder="Rate" required="required" />
+            </div> 
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-info">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% for boardgame in boardgames %}
+<div class="modal fade" id="editGameModal{{ boardgame.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content border border-info">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Edit</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="{{ url_for('edit', id=boardgame.id) }}" method="post">
       <div class="modal-body text-center">
-          <div class="form-group">
-            <input type="text" name="name" class="form-control" placeholder="Name" required="required" />
-            <input type="text" name="img_link" class="form-control" placeholder="IMG Link" required="required" />
-            <input type="text" name="year" class="form-control" placeholder="Year" required="required" />
-            <input type="text" name="level" class="form-control" placeholder="Complexity" required="required" />
-            <input type="text" name="minPlayers" class="form-control"  placeholder="Min players" required="required" />
-            <input type="text" name="maxPlayers" class="form-control" placeholder="Max players" required="required" />
-            <input type="text" name="time" class="form-control" placeholder="Time" required="required" />
-            <input type="text" name="rate" class="form-control" placeholder="Rate" required="required" />
-          </div> 
+        <div class="form-group">
+          <input type="text" name="name" class="form-control" placeholder="Name" value="{{ boardgame.name }}" required="required" />
+          <input type="text" name="img_link" class="form-control" placeholder="IMG Link" value="{{ boardgame.img }}" required="required" />
+          <input type="text" name="year" class="form-control" placeholder="Year" value="{{ boardgame.year }}" required="required" />
+          <input type="text" name="level" class="form-control" placeholder="Complexity" value="{{ boardgame.level }}" required="required" />
+          <input type="text" name="minPlayers" class="form-control" placeholder="Min players" value="{{ boardgame.minPlayers }}" required="required" />
+          <input type="text" name="maxPlayers" class="form-control" placeholder="Max players" value="{{ boardgame.maxPlayers }}" required="required" />
+          <input type="text" name="time" class="form-control" placeholder="Time" value="{{ boardgame.time }}" required="required" />
+          <input type="text" name="rate" class="form-control" placeholder="Rate" value="{{ boardgame.rate }}" required="required" />
+        </div> 
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-info">Add</button>
+        <button type="submit" class="btn btn-info">Edit</button>
       </div>
       </form>
     </div>
   </div>
 </div>
+{% endfor %}
 
 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
@@ -60,12 +92,12 @@
           <p class="card-text">Complexity: {{ boardgame.level }}</p>
         </div>
         <div class="card-footer text-muted">
-          <a href="{{ url_for('edit', id=boardgame.id) }}" class="btn btn-info" role="button">Edit</a>
+          <!-- <a href="{{ url_for('edit', id=boardgame.id) }}" class="btn btn-info" role="button">Edit</a> -->
+          <a href="#" data-toggle="modal" data-target='#editGameModal{{ boardgame.id }}' class="btn btn-info">Edit</a>
         </div>
       </div>
       {% endfor %}
     </div>
-  </div>
   </div>
 </main>
 

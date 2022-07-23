@@ -132,6 +132,18 @@ def friend(id):
             friends_list_waiting.append(User.query.filter_by(id=friend.friend).first())
     return render_template("friend.html", name=current_user.name, avatar=current_user.avatar, boardgames=users_boardgames, friends_accepted=friends_list_accepted, friends_waiting=friends_list_waiting, owner=User.query.filter_by(id=id).first().name, logged_in=True)
 
+@app.route('/friend_list')
+@login_required
+def friend_list():
+    users_friends = Friendship.query.filter_by(user=current_user.id).all()
+    friends_list_accepted = []
+    friends_list_waiting = []
+    for friend in users_friends:
+        if friend.status == "accepted":
+            friends_list_accepted.append(User.query.filter_by(id=friend.friend).first())
+        else:
+            friends_list_waiting.append(User.query.filter_by(id=friend.friend).first())
+    return render_template("friend_list.html", name=current_user.name, avatar=current_user.avatar, friends_accepted=friends_list_accepted, friends_waiting=friends_list_waiting, logged_in=True)
 
 @app.route('/add', methods=["GET", "POST"])
 @login_required
@@ -254,7 +266,7 @@ def deletefriend():
     db.session.delete(friendship_to_delete)
     db.session.delete(friendship_to_delete2)
     db.session.commit()
-    return redirect(url_for('collection'))
+    return redirect(url_for('friend_list'))
 
 if __name__ == "__main__":
     app.run(debug=True)
